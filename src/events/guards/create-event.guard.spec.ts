@@ -1,7 +1,7 @@
-import { EventGuard } from './create-event.guard';
+import { CreateEventGuard } from './create-event.guard';
 
-describe('EventGuard', () => {
+describe('CreateEventGuard', () => {
   it('should be defined', () => {
-    expect(new EventGuard()).toBeDefined();
+    expect(new CreateEventGuard()).toBeDefined();
   });
 });
