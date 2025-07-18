@@ -55,10 +55,10 @@ export class CreateEventGuard implements CanActivate {
 
   private async validateIpAddressForAdsEvent(ip: string) {
     try {
-      // TODO: hardcoded ip for easier testing on localhost
+      // NOTE: hardcoded slovenian ip for easier testing on localhost
       // ping ip-api which will respond with country code
       const response = await axios.get(
-        `http://ip-api.com/json/${ip === '::1' ? '193.77.212.29' : ip}?fields=16386`,
+        `http://ip-api.com/json/${(ip === '::1' || ip === '127.0.0.1') && process.env.NODE_ENV === 'development' ? '193.77.212.29' : ip}?fields=16386`,
       );
 
       // extract data and check status
