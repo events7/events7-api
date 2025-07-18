@@ -5,6 +5,7 @@ Event tracker for Outfit7 technical assessment.
 ## Prerequisites
 
 - Install node
+- Install docker
 
 ## Project setup
 
