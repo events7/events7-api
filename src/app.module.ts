@@ -16,10 +16,10 @@ import { EventsModule } from './events/events.module';
       username: process.env.POSTGRES_USER ?? 'root',
       password: process.env.POSTGRES_PASSWORD ?? 'root',
       database: process.env.POSTGRES_DB ?? 'test',
-      entities: [],
       // TODO: this could be potential risk of data loss
       // TODO: keeping it simple for now
       synchronize: true,
+      autoLoadEntities: true,
     }),
   ],
   controllers: [AppController],
