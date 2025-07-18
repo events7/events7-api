@@ -6,12 +6,14 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity';
 import { EventsService } from './events.service';
+import { CreateEventGuard } from './guards/create-event.guard';
 
 @Controller({
   version: '1',
@@ -22,6 +24,7 @@ export class EventsController {
 
   @Post()
   @ApiResponse({ status: 201, type: Event })
+  @UseGuards(CreateEventGuard)
   create(@Body() createEventDto: CreateEventDto) {
     return this.eventsService.create(createEventDto);
   }

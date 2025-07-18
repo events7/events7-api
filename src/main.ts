@@ -1,10 +1,11 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Set up OpenAPI Swagger
   const config = new DocumentBuilder()
@@ -25,6 +26,9 @@ async function bootstrap() {
 
   // Enable validation
   app.useGlobalPipes(new ValidationPipe());
+
+  // Trust proxy
+  app.set('trust proxy', 'loopback');
 
   // Start listening
   await app.listen(process.env.PORT ?? 3000);
