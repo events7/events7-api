@@ -8,13 +8,38 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiResponse } from '@nestjs/swagger';
-import { DeleteResult, UpdateResult } from 'typeorm';
+import { ApiProperty, ApiResponse } from '@nestjs/swagger';
+import { DeleteResult, ObjectLiteral, UpdateResult } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity';
 import { EventsService } from './events.service';
 import { CreateEventGuard } from './guards/create-event.guard';
+
+/**
+ * Used for typing the response after update for swagger
+ */
+class UpdateResultExtended extends UpdateResult {
+  @ApiProperty()
+  declare affected: number;
+
+  @ApiProperty()
+  declare raw: any;
+
+  @ApiProperty()
+  declare generatedMaps: ObjectLiteral[];
+}
+
+/**
+ * Used for typing the response after delete for swagger
+ */
+class DeleteResultExtended extends DeleteResult {
+  @ApiProperty()
+  declare affected: number;
+
+  @ApiProperty()
+  declare raw: any;
+}
 
 @Controller({
   version: '1',
@@ -44,7 +69,7 @@ export class EventsController {
   }
 
   @Patch(':id')
-  @ApiResponse({ status: 200, type: UpdateResult })
+  @ApiResponse({ status: 200, type: UpdateResultExtended })
   update(
     @Param('id') id: string,
     @Body() updateEventDto: UpdateEventDto,
@@ -53,7 +78,7 @@ export class EventsController {
   }
 
   @Delete(':id')
-  @ApiResponse({ status: 200, type: DeleteResult })
+  @ApiResponse({ status: 200, type: DeleteResultExtended })
   remove(@Param('id') id: string): Promise<DeleteResult> {
     return this.eventsService.remove(id);
   }

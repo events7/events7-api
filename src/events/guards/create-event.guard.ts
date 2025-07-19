@@ -2,7 +2,8 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { Event, EventType } from '../entities/event.entity';
+import { CreateEventDto } from '../dto/create-event.dto';
+import { EventType } from '../entities/event.entity';
 
 type IPApiResponse = {
   status: 'success' | 'fail';
@@ -16,11 +17,11 @@ export class CreateEventGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     // get body and check event type
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const body = context.switchToHttp().getRequest()?.body as Event;
+    const body = context.switchToHttp().getRequest()?.body as CreateEventDto;
 
     // just for more safe checking
     if (body == undefined) {
-      return true;
+      return false;
     }
 
     // in case we have event type equal to "ads",
@@ -53,7 +54,7 @@ export class CreateEventGuard implements CanActivate {
     return true;
   }
 
-  private async validateIpAddressForAdsEvent(ip: string) {
+  async validateIpAddressForAdsEvent(ip: string) {
     try {
       // NOTE: hardcoded slovenian ip for easier testing on localhost
       // ping ip-api which will respond with country code
