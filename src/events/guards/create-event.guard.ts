@@ -44,7 +44,7 @@ export class CreateEventGuard implements CanActivate {
         return this.validateIpAddressForAdsEvent(ip);
       }
 
-      // in case for some reason ip address is not available
+      // if for some reason ip address is not available
       // then reject request
       return false;
     }

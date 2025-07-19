@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
+import { DeleteResult, UpdateResult } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity';
@@ -25,7 +26,7 @@ export class EventsController {
   @Post()
   @ApiResponse({ status: 201, type: Event })
   @UseGuards(CreateEventGuard)
-  create(@Body() createEventDto: CreateEventDto) {
+  create(@Body() createEventDto: CreateEventDto): Promise<Event> {
     return this.eventsService.create(createEventDto);
   }
 
@@ -43,14 +44,17 @@ export class EventsController {
   }
 
   @Patch(':id')
-  @ApiResponse({ status: 200, type: Event })
-  update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
+  @ApiResponse({ status: 200, type: UpdateResult })
+  update(
+    @Param('id') id: string,
+    @Body() updateEventDto: UpdateEventDto,
+  ): Promise<UpdateResult> {
     return this.eventsService.update(id, updateEventDto);
   }
 
   @Delete(':id')
-  @ApiResponse({ status: 200, type: Event })
-  remove(@Param('id') id: string) {
+  @ApiResponse({ status: 200, type: DeleteResult })
+  remove(@Param('id') id: string): Promise<DeleteResult> {
     return this.eventsService.remove(id);
   }
 }
