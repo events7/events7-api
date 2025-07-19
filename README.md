@@ -47,6 +47,8 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+Visit [http://localhost:3000/docs](http://localhost:3000/docs) for documentation.
+
 ## Run tests
 
 ```bash
@@ -63,6 +65,12 @@ $ npm run test:cov
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+
+## Assumptions made
+
+1. When updating event and changing its type (from/to `ADS`) I assumed that there is no need to check if user has permission - probably for the production ready app this should be implemented but let's just leave it as it for current scope of assignment.
+
+2. ...
 
 ## Stay in touch
 
