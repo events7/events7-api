@@ -5,7 +5,7 @@ const path = require('path');
 
 const url = 'http://localhost:3000/docs-json';
 const outputDir = path.join(__dirname, '..', 'src', 'shared', 'events7-shared');
-const outputFile = path.join(outputDir, 'docs.json');
+const outputFile = path.join(outputDir, 'api-types.json');
 
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
@@ -26,7 +26,7 @@ client
 
     file.on('finish', () => {
       file.close();
-      console.log(`Downloaded docs.json to ${outputFile}`);
+      console.log(`Downloaded api-types.json to ${outputFile}`);
     });
   })
   .on('error', (err) => {
