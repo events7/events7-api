@@ -5,7 +5,7 @@ import { Event, EventType } from './entities/event.entity';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
 
-const event: Event = {
+const eventMock: Event = {
   id: '1',
   name: 'Lorem',
   type: EventType.APP,
@@ -23,12 +23,14 @@ describe('EventsController', () => {
       return new Promise((resolve) => resolve([]));
     }),
     findOne: jest.fn((id: string): Promise<Event | null> => {
-      return new Promise((resolve) => resolve(event.id == id ? event : null));
+      return new Promise((resolve) =>
+        resolve(eventMock.id == id ? eventMock : null),
+      );
     }),
     create: jest.fn((createEventDto: CreateEventDto): Promise<Event> => {
       return new Promise((resolve) =>
         resolve({
-          ...event,
+          ...eventMock,
           ...createEventDto,
           id: '2',
         }),
@@ -37,21 +39,38 @@ describe('EventsController', () => {
     update: jest.fn(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (id: string, updateEventDto: Event): Promise<UpdateResult> => {
-        const res: UpdateResult = {
-          generatedMaps: [event],
-          raw: [event],
+        if (eventMock.id !== id) {
+          const res: UpdateResult = {
+            generatedMaps: [],
+            raw: [],
+            affected: 0,
+          };
+          return new Promise((resolve) => resolve(res));
+        } else {
+          const res: UpdateResult = {
+            generatedMaps: [{ ...eventMock, ...updateEventDto }],
+            raw: [{ ...eventMock, ...updateEventDto }],
+            affected: 1,
+          };
+          return new Promise((resolve) => resolve(res));
+        }
+      },
+    ),
+
+    remove: jest.fn((id: string): Promise<DeleteResult> => {
+      if (eventMock.id !== id) {
+        const res: DeleteResult = {
+          raw: [],
+          affected: 0,
+        };
+        return new Promise((resolve) => resolve(res));
+      } else {
+        const res: DeleteResult = {
+          raw: [eventMock],
           affected: 1,
         };
         return new Promise((resolve) => resolve(res));
-      },
-    ),
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    remove: jest.fn((id: string): Promise<DeleteResult> => {
-      const res: DeleteResult = {
-        raw: [event],
-        affected: 1,
-      };
-      return new Promise((resolve) => resolve(res));
+      }
     }),
   };
 
@@ -87,7 +106,7 @@ describe('EventsController', () => {
       .findOne('1')
       .then((res) => {
         expect(res).toEqual({
-          ...event,
+          ...eventMock,
         });
       })
       .catch((err) => {
@@ -109,14 +128,14 @@ describe('EventsController', () => {
   it('should create an event', () => {
     controller
       .create({
-        name: event.name,
-        type: event.type,
-        description: event.description,
-        priority: event.priority,
+        name: eventMock.name,
+        type: eventMock.type,
+        description: eventMock.description,
+        priority: eventMock.priority,
       })
       .then((res) => {
         expect(res).toEqual({
-          ...event,
+          ...eventMock,
           id: '2',
         });
       })
@@ -126,18 +145,44 @@ describe('EventsController', () => {
   });
 
   it('should update an event', () => {
+    const entry: CreateEventDto = {
+      name: 'Lorem 1234',
+      type: EventType.LIVEOPS,
+      description: 'Ipsum 2',
+      priority: 2,
+    };
     controller
       .update('1', {
-        name: event.name,
-        type: event.type,
-        description: event.description,
-        priority: event.priority,
+        name: entry.name,
+        type: entry.type,
+        description: entry.description,
+        priority: entry.priority,
       })
       .then((res) => {
         expect(res).toEqual({
-          generatedMaps: [event],
-          raw: [event],
+          generatedMaps: [{ ...eventMock, ...entry }],
+          raw: [{ ...eventMock, ...entry }],
           affected: 1,
+        });
+      })
+      .catch((err) => {
+        expect(err).toBeUndefined();
+      });
+  });
+
+  it('should not update an event', () => {
+    controller
+      .update('2', {
+        name: eventMock.name,
+        type: eventMock.type,
+        description: eventMock.description,
+        priority: eventMock.priority,
+      })
+      .then((res) => {
+        expect(res).toEqual({
+          generatedMaps: [],
+          raw: [],
+          affected: 0,
         });
       })
       .catch((err) => {
@@ -150,8 +195,22 @@ describe('EventsController', () => {
       .remove('1')
       .then((res) => {
         expect(res).toEqual({
-          raw: [event],
+          raw: [eventMock],
           affected: 1,
+        });
+      })
+      .catch((err) => {
+        expect(err).toBeUndefined();
+      });
+  });
+
+  it('should not delete an event', () => {
+    controller
+      .remove('2')
+      .then((res) => {
+        expect(res).toEqual({
+          raw: [],
+          affected: 0,
         });
       })
       .catch((err) => {

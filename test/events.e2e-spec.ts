@@ -44,31 +44,42 @@ describe('EventsController (e2e)', () => {
     ),
     update: jest.fn(
       (
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         options: { id: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         updateEventDto: Event,
       ): Promise<UpdateResult> => {
-        return new Promise((resolve) =>
-          resolve({
-            generatedMaps: [{ ...mockEvent, ...updateEventDto }],
-            raw: [{ ...mockEvent, ...updateEventDto }],
-            affected: 1,
-          }),
-        );
+        return new Promise((resolve) => {
+          if (mockEvent.id !== options.id) {
+            resolve({
+              generatedMaps: [],
+              raw: [],
+              affected: 0,
+            });
+          } else {
+            resolve({
+              generatedMaps: [{ ...mockEvent, ...updateEventDto }],
+              raw: [{ ...mockEvent, ...updateEventDto }],
+              affected: 1,
+            });
+          }
+        });
       },
     ),
-    delete: jest.fn(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      (options: { where: { id: string } }): Promise<DeleteResult> => {
-        return new Promise((resolve) =>
+    delete: jest.fn((options: { id: string }): Promise<DeleteResult> => {
+      return new Promise((resolve) => {
+        if (mockEvent.id !== options.id) {
+          return resolve({
+            raw: [],
+            affected: 0,
+          });
+        } else {
           resolve({
             raw: [mockEvent],
             affected: 1,
-          }),
-        );
-      },
-    ),
+          });
+        }
+      });
+    }),
   };
 
   beforeEach(async () => {
@@ -166,6 +177,28 @@ describe('EventsController (e2e)', () => {
       });
   });
 
+  it('/api/events/:id (PATCH) return null', () => {
+    const entry: CreateEventDto = {
+      name: 'Lorem 1',
+      type: EventType.LIVEOPS,
+      description: 'Ipsum 2',
+      priority: 2,
+    };
+
+    return request(app.getHttpServer())
+      .patch('/api/events/987654')
+      .send(entry)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body).toEqual({
+          // parsing to avoid Date object
+          raw: [],
+          generatedMaps: [],
+          affected: 0,
+        });
+      });
+  });
+
   it('/api/events/:id (DELETE)', () => {
     return request(app.getHttpServer())
       .delete(`/api/events/${mockEvent.id}`)
@@ -175,6 +208,19 @@ describe('EventsController (e2e)', () => {
           // parsing to avoid Date object
           raw: [JSON.parse(JSON.stringify(mockEvent))],
           affected: 1,
+        });
+      });
+  });
+
+  it('/api/events/:id (DELETE) return null', () => {
+    return request(app.getHttpServer())
+      .delete('/api/events/987654')
+      .expect(200)
+      .expect((res) => {
+        expect(res.body).toEqual({
+          // parsing to avoid Date object
+          raw: [],
+          affected: 0,
         });
       });
   });

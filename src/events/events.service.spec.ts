@@ -41,31 +41,42 @@ describe('EventsService', () => {
     ),
     update: jest.fn(
       (
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         options: { id: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         updateEventDto: Event,
       ): Promise<UpdateResult> => {
-        return new Promise((resolve) =>
-          resolve({
-            generatedMaps: [mockEvent],
-            raw: [mockEvent],
-            affected: 1,
-          }),
-        );
+        return new Promise((resolve) => {
+          if (mockEvent.id !== options.id) {
+            return resolve({
+              raw: [],
+              affected: 0,
+              generatedMaps: [],
+            });
+          } else {
+            resolve({
+              generatedMaps: [mockEvent],
+              raw: [mockEvent],
+              affected: 1,
+            });
+          }
+        });
       },
     ),
-    delete: jest.fn(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      (options: { where: { id: string } }): Promise<DeleteResult> => {
-        return new Promise((resolve) =>
+    delete: jest.fn((options: { id: string }): Promise<DeleteResult> => {
+      return new Promise((resolve) => {
+        if (mockEvent.id !== options.id) {
+          return resolve({
+            raw: [],
+            affected: 0,
+          });
+        } else {
           resolve({
             raw: [mockEvent],
             affected: 1,
-          }),
-        );
-      },
-    ),
+          });
+        }
+      });
+    }),
   };
 
   beforeEach(async () => {
@@ -111,7 +122,7 @@ describe('EventsService', () => {
   });
 
   it('should not find one event', async () => {
-    const event = await service.findOne('1234568');
+    const event = await service.findOne('9876543');
     expect(event).toBeNull();
   });
 
@@ -124,11 +135,28 @@ describe('EventsService', () => {
     });
   });
 
+  it('should not update an event', async () => {
+    const event = await service.update('9876543', mockEvent);
+    expect(event).toEqual({
+      raw: [],
+      affected: 0,
+      generatedMaps: [],
+    });
+  });
+
   it('should delete an event', async () => {
     const event = await service.remove(mockEvent.id);
     expect(event).toEqual({
       raw: [mockEvent],
       affected: 1,
+    });
+  });
+
+  it('should not delete an event', async () => {
+    const event = await service.remove('9876543');
+    expect(event).toEqual({
+      raw: [],
+      affected: 0,
     });
   });
 });
