@@ -8,38 +8,18 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiProperty, ApiResponse } from '@nestjs/swagger';
-import { DeleteResult, ObjectLiteral, UpdateResult } from 'typeorm';
+import { ApiResponse } from '@nestjs/swagger';
+import { handleDatabaseErrors } from '../../helpers/handleDatabaseErrors';
+import {
+  BadRequestResponseType,
+  ForbiddenResponseType,
+  SuccessResponseType,
+} from '../../types/response-types';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity';
 import { EventsService } from './events.service';
 import { CreateEventGuard } from './guards/create-event.guard';
-
-/**
- * Used for typing the response after update for swagger
- */
-class UpdateResultExtended extends UpdateResult {
-  @ApiProperty()
-  declare affected: number;
-
-  @ApiProperty()
-  declare raw: any;
-
-  @ApiProperty()
-  declare generatedMaps: ObjectLiteral[];
-}
-
-/**
- * Used for typing the response after delete for swagger
- */
-class DeleteResultExtended extends DeleteResult {
-  @ApiProperty()
-  declare affected: number;
-
-  @ApiProperty()
-  declare raw: any;
-}
 
 @Controller({
   version: '1',
@@ -49,8 +29,23 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Post()
-  @ApiResponse({ status: 201, type: Event })
-  @ApiResponse({ status: 403, type: Object })
+  @ApiResponse({
+    status: 201,
+    type: Event,
+    description: 'Event created successfully. Returns the created event',
+  })
+  @ApiResponse({
+    status: 400,
+    type: BadRequestResponseType,
+    description:
+      'Bad request. Usually triggered if the request body or provided parameter is not valid',
+  })
+  @ApiResponse({
+    status: 403,
+    type: ForbiddenResponseType,
+    description:
+      'Forbidden resource. Try again later or check with adminstrators that you have correct permissions',
+  })
   @UseGuards(CreateEventGuard)
   create(@Body() createEventDto: CreateEventDto): Promise<Event> {
     return this.eventsService.create(createEventDto);
@@ -64,23 +59,80 @@ export class EventsController {
   }
 
   @Get(':id')
-  @ApiResponse({ status: 200, type: Event })
+  @ApiResponse({
+    status: 200,
+    type: Event,
+    description: 'Event found. Returns the event',
+  })
+  @ApiResponse({
+    status: 400,
+    type: BadRequestResponseType,
+    description:
+      'Bad request. Usually triggered if the request body or provided parameter is not valid',
+  })
   async findOne(@Param('id') id: string): Promise<Event | null> {
-    return this.eventsService.findOne(id);
+    try {
+      const exists = await this.eventsService.findOne(id);
+
+      return exists;
+    } catch (error) {
+      handleDatabaseErrors(error);
+
+      console.error(error);
+      throw error;
+    }
   }
 
   @Patch(':id')
-  @ApiResponse({ status: 200, type: UpdateResultExtended })
-  update(
+  @ApiResponse({
+    status: 200,
+    type: SuccessResponseType,
+    description: 'Returns true if updated successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    type: BadRequestResponseType,
+    description:
+      'Bad request. Usually triggered if the request body or provided parameter is not valid',
+  })
+  async update(
     @Param('id') id: string,
     @Body() updateEventDto: UpdateEventDto,
-  ): Promise<UpdateResult> {
-    return this.eventsService.update(id, updateEventDto);
+  ): Promise<SuccessResponseType> {
+    try {
+      const result = await this.eventsService.update(id, updateEventDto);
+
+      return { success: result.affected != undefined && result.affected > 0 };
+    } catch (error) {
+      handleDatabaseErrors(error);
+
+      console.error(error);
+      throw error;
+    }
   }
 
   @Delete(':id')
-  @ApiResponse({ status: 200, type: DeleteResultExtended })
-  remove(@Param('id') id: string): Promise<DeleteResult> {
-    return this.eventsService.remove(id);
+  @ApiResponse({
+    status: 200,
+    type: SuccessResponseType,
+    description: 'Returns true if deleted successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    type: BadRequestResponseType,
+    description:
+      'Bad request. Usually triggered if the request body or provided parameter is not valid',
+  })
+  async remove(@Param('id') id: string): Promise<SuccessResponseType> {
+    try {
+      const success = await this.eventsService.remove(id);
+
+      return { success: success.affected != undefined && success.affected > 0 };
+    } catch (error) {
+      handleDatabaseErrors(error);
+
+      console.error(error);
+      throw error;
+    }
   }
 }

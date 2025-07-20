@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { SuccessResponseType } from 'src/types/response-types';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { Event, EventType } from './entities/event.entity';
@@ -158,11 +159,10 @@ describe('EventsController', () => {
         priority: entry.priority,
       })
       .then((res) => {
-        expect(res).toEqual({
-          generatedMaps: [{ ...eventMock, ...entry }],
-          raw: [{ ...eventMock, ...entry }],
-          affected: 1,
-        });
+        const expected: SuccessResponseType = {
+          success: true,
+        };
+        expect(res).toEqual(expected);
       })
       .catch((err) => {
         expect(err).toBeUndefined();
@@ -178,11 +178,10 @@ describe('EventsController', () => {
         priority: eventMock.priority,
       })
       .then((res) => {
-        expect(res).toEqual({
-          generatedMaps: [],
-          raw: [],
-          affected: 0,
-        });
+        const expected: SuccessResponseType = {
+          success: false,
+        };
+        expect(res).toEqual(expected);
       })
       .catch((err) => {
         expect(err).toBeUndefined();
@@ -193,10 +192,10 @@ describe('EventsController', () => {
     controller
       .remove('1')
       .then((res) => {
-        expect(res).toEqual({
-          raw: [eventMock],
-          affected: 1,
-        });
+        const expected: SuccessResponseType = {
+          success: true,
+        };
+        expect(res).toEqual(expected);
       })
       .catch((err) => {
         expect(err).toBeUndefined();
@@ -207,10 +206,10 @@ describe('EventsController', () => {
     controller
       .remove('2')
       .then((res) => {
-        expect(res).toEqual({
-          raw: [],
-          affected: 0,
-        });
+        const expected: SuccessResponseType = {
+          success: false,
+        };
+        expect(res).toEqual(expected);
       })
       .catch((err) => {
         expect(err).toBeUndefined();

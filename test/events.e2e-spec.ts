@@ -1,6 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { UpdateEventDto } from 'src/api/events/dto/update-event.dto';
+import { SuccessResponseType } from 'src/types/response-types';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { DeleteResult, UpdateResult } from 'typeorm';
@@ -153,7 +155,7 @@ describe('EventsController (e2e)', () => {
   });
 
   it('/api/events/:id (PATCH)', () => {
-    const entry: CreateEventDto = {
+    const entry: UpdateEventDto = {
       name: 'Lorem 1',
       type: EventType.LIVEOPS,
       description: 'Ipsum 2',
@@ -165,19 +167,15 @@ describe('EventsController (e2e)', () => {
       .send(entry)
       .expect(200)
       .expect((res) => {
-        expect(res.body).toEqual({
-          // parsing to avoid Date object
-          raw: [JSON.parse(JSON.stringify({ ...mockEvent, ...entry }))],
-          generatedMaps: [
-            JSON.parse(JSON.stringify({ ...mockEvent, ...entry })),
-          ] as Event[],
-          affected: 1,
-        });
+        const expected: SuccessResponseType = {
+          success: true,
+        };
+        expect(res.body).toEqual(expected);
       });
   });
 
-  it('/api/events/:id (PATCH) return null', () => {
-    const entry: CreateEventDto = {
+  it('/api/events/:id (PATCH) return false', () => {
+    const entry: UpdateEventDto = {
       name: 'Lorem 1',
       type: EventType.LIVEOPS,
       description: 'Ipsum 2',
@@ -189,12 +187,10 @@ describe('EventsController (e2e)', () => {
       .send(entry)
       .expect(200)
       .expect((res) => {
-        expect(res.body).toEqual({
-          // parsing to avoid Date object
-          raw: [],
-          generatedMaps: [],
-          affected: 0,
-        });
+        const expected: SuccessResponseType = {
+          success: false,
+        };
+        expect(res.body).toEqual(expected);
       });
   });
 
@@ -203,24 +199,22 @@ describe('EventsController (e2e)', () => {
       .delete(`/api/events/${mockEvent.id}`)
       .expect(200)
       .expect((res) => {
-        expect(res.body).toEqual({
-          // parsing to avoid Date object
-          raw: [JSON.parse(JSON.stringify(mockEvent))],
-          affected: 1,
-        });
+        const expected: SuccessResponseType = {
+          success: true,
+        };
+        expect(res.body).toEqual(expected);
       });
   });
 
-  it('/api/events/:id (DELETE) return null', () => {
+  it('/api/events/:id (DELETE) return false', () => {
     return request(app.getHttpServer())
       .delete('/api/events/987654')
       .expect(200)
       .expect((res) => {
-        expect(res.body).toEqual({
-          // parsing to avoid Date object
-          raw: [],
-          affected: 0,
-        });
+        const expected: SuccessResponseType = {
+          success: false,
+        };
+        expect(res.body).toEqual(expected);
       });
   });
 });

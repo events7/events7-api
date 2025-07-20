@@ -30,6 +30,8 @@ client
     });
   })
   .on('error', (err) => {
-    console.error(`Request failed: ${err.message}`);
+    console.error(
+      `Request failed: ${err.message}. Do you have a running server? Run server with 'npm run start:dev'.`,
+    );
     process.exit(1);
   });
