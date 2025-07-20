@@ -72,7 +72,7 @@ When you're ready to deploy your NestJS application to production, there are som
 
 2. Since it is not easy to isolate 403 and 201 HTTP requests on `/api/events (POST)` for `events.e2e-spec.ts` tests we are testing if the response is 201 or 403. Anyway, this is tested using unit tests so if they fails then obviously something is wrong.
 
-3. In order to make it easier (or not - still debatable and depends on the project) if you execute command `npm run update:docs` it will create/update shared json file. This file contains much needed types for using on frontend. Even if there is by default [http://localhost:3000/docs-json](http://localhost:3000/docs-json) I like to keep it in git so that everything is tracked and correct version can be used. Later this script could be run automatically before push so that we make sure that shared always gets newest version.
+3. In order to make it easier (or not - still debatable and depends on the project) if you execute command `npm run generate:types` it will create/update shared json file `api-types.json`. This file contains much needed api configuration for generating types on frontend. Even if there is by default [http://localhost:3000/docs-json](http://localhost:3000/docs-json) I like to keep it in git so that everything is tracked and correct version can be used. Later this script could be run automatically before push so that we make sure that shared always gets newest version.
 
 4. ...
 
