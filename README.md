@@ -74,7 +74,9 @@ When you're ready to deploy your NestJS application to production, there are som
 
 3. In order to make it easier (or not - still debatable and depends on the project) if you execute command `npm run generate:docs` it will create/update shared json file `docs.json`. This file contains much needed api configuration for generating types on frontend. Even if there is by default [http://localhost:3000/docs-json](http://localhost:3000/docs-json) I like to keep it in git so that everything is tracked and correct version can be used. Later this script could be run automatically before push so that we make sure that shared always gets newest version.
 
-4. ...
+4. We assume that it is save to keep external API url in the git - usually it is not and there should be any password manager implemented. For this purpose I assumend that the external API is public and same for everyone on the web (usually not).
+
+5. ...
 
 ## Stay in touch
 
