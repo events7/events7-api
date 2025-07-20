@@ -1,0 +1,4 @@
+[submodule "src/shared/events7-shared"]
+	path = src/shared/events7-shared
+	url = https://github.com/events7/events7-shared.git
+	branch = main
