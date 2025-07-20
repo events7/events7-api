@@ -76,7 +76,9 @@ When you're ready to deploy your NestJS application to production, there are som
 
 4. We assume that it is save to keep external API credentials url in the git - usually we should save it in any password manager or any other secure system. For this purpose I assumend that the external API is public since the login credentials that I have received are from public file.
 
-5. ...
+5. I also assumed that there is no need for pagination under `/api/v1/events` GET request.
+
+6. ...
 
 ## Stay in touch
 
