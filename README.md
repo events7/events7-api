@@ -68,9 +68,11 @@ When you're ready to deploy your NestJS application to production, there are som
 
 ## Assumptions made
 
-1. When updating event and changing its type (from/to `ADS`) I assumed that there is no need to check if user has permission - probably for the production ready app this should be implemented but let's just leave it as it for current scope of assignment.
+1. When updating (not creating) event and changing its type (from/to `ADS`) I assumed that there is no need to check if user has permission - probably for the production ready app this should be implemented but let's just leave it as it for current scope of assignment.
 
-2. ...
+2. Since it is not easy to isolate 403 and 201 HTTP requests on `/api/events (POST)` for `events.e2e-spec.ts` tests we are testing if the response is 201 or 403. Anyway, this is tested using unit tests so if they fails then obviously something is wrong.
+
+3. ...
 
 ## Stay in touch
 
