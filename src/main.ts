@@ -30,6 +30,11 @@ async function bootstrap() {
   // Trust proxy
   app.set('trust proxy', 'loopback');
 
+  // Enable cors
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN,
+  });
+
   // Start listening
   await app.listen(process.env.PORT ?? 3000);
 }
