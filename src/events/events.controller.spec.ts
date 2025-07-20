@@ -37,7 +37,6 @@ describe('EventsController', () => {
       );
     }),
     update: jest.fn(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (id: string, updateEventDto: Event): Promise<UpdateResult> => {
         if (eventMock.id !== id) {
           const res: UpdateResult = {

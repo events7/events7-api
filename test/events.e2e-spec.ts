@@ -45,7 +45,6 @@ describe('EventsController (e2e)', () => {
     update: jest.fn(
       (
         options: { id: string },
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         updateEventDto: Event,
       ): Promise<UpdateResult> => {
         return new Promise((resolve) => {
