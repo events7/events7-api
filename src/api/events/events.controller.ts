@@ -50,6 +50,7 @@ export class EventsController {
 
   @Post()
   @ApiResponse({ status: 201, type: Event })
+  @ApiResponse({ status: 403, type: Object })
   @UseGuards(CreateEventGuard)
   create(@Body() createEventDto: CreateEventDto): Promise<Event> {
     return this.eventsService.create(createEventDto);

@@ -4,9 +4,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { DeleteResult, UpdateResult } from 'typeorm';
-import { CreateEventDto } from '../src/events/dto/create-event.dto';
-import { Event, EventType } from '../src/events/entities/event.entity';
-import { EventsModule } from '../src/events/events.module';
+import { CreateEventDto } from '../src/api/events/dto/create-event.dto';
+import { Event, EventType } from '../src/api/events/entities/event.entity';
+import { EventsModule } from '../src/api/events/events.module';
 
 const mockEvent: Event = {
   id: '1234567',
