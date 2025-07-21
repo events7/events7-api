@@ -10,6 +10,12 @@ Event tracker for Outfit7 technical assessment.
 ## Project setup
 
 ```bash
+# clone git repository
+git clone https://github.com/events7/events7-api
+
+# change directory
+cd events7-api
+
 # install correct node version (if you haven't already)
 nvm install $(cat .nvmrc)
 
@@ -17,7 +23,13 @@ nvm install $(cat .nvmrc)
 nvm use $(cat .nvmrc)
 
 # install packages
-$ npm install
+npm install
+```
+
+### Pull git modules (shared repository)
+
+```bash
+npm run git:pull:shared
 ```
 
 ## Prepare environment variables
@@ -36,15 +48,17 @@ docker compose up
 
 ## Compile and run the project
 
+Open another terminal and run next commands
+
 ```bash
 # development
-$ npm run start
+npm run start
 
 # watch mode
-$ npm run start:dev
+npm run start:dev
 
 # production mode
-$ npm run start:prod
+npm run start:prod
 ```
 
 Visit [http://localhost:3000/docs](http://localhost:3000/docs) for documentation.

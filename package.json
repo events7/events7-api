@@ -23,7 +23,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:e2e:watch": "jest --config ./test/jest-e2e.json --watch",
     "format:docs": "prettier --write src/shared/events7-shared/docs.json",
-    "generate:docs": "node scripts/download-docs-json.js && npm run format:docs"
+    "generate:docs": "node scripts/download-docs-json.js && npm run format:docs",
+    "git:pull:shared": "git submodule update --init --recursive --remote"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
