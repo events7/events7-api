@@ -25,7 +25,7 @@ export class EventsService {
   }
 
   update(id: string, updateEventDto: UpdateEventDto) {
-    return this.eventRepository.update({ id }, updateEventDto);
+    return this.eventRepository.save({ id, ...updateEventDto });
   }
 
   remove(id: string) {

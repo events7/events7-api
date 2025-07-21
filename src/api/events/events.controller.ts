@@ -9,11 +9,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
+import {
+  SuccessResponseTypeEventDelete,
+  SuccessResponseTypeEventGetOne,
+  SuccessResponseTypeEventPatch,
+  SuccessResponseTypeEventPost,
+} from 'src/types/response-types.events';
 import { handleDatabaseErrors } from '../../helpers/handleDatabaseErrors';
 import {
   BadRequestResponseType,
   ForbiddenResponseType,
-  SuccessResponseType,
 } from '../../types/response-types';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -31,8 +36,8 @@ export class EventsController {
   @Post()
   @ApiResponse({
     status: 201,
-    type: Event,
-    description: 'Event created successfully. Returns the created event',
+    type: SuccessResponseTypeEventPost,
+    description: 'Event created successfully.',
   })
   @ApiResponse({
     status: 400,
@@ -47,8 +52,21 @@ export class EventsController {
       'Forbidden resource. Try again later or check with adminstrators that you have correct permissions',
   })
   @UseGuards(CreateEventGuard)
-  create(@Body() createEventDto: CreateEventDto): Promise<Event> {
-    return this.eventsService.create(createEventDto);
+  async create(
+    @Body() createEventDto: CreateEventDto,
+  ): Promise<SuccessResponseTypeEventPost> {
+    try {
+      const res: SuccessResponseTypeEventPost = {
+        message: 'Event created successfully!',
+        success: true,
+        data: await this.eventsService.create(createEventDto),
+      };
+
+      return res;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   @Get()
@@ -61,8 +79,8 @@ export class EventsController {
   @Get(':id')
   @ApiResponse({
     status: 200,
-    type: Event,
-    description: 'Event found. Returns the event',
+    type: SuccessResponseTypeEventGetOne,
+    description: 'Returns the event if found or null if not found',
   })
   @ApiResponse({
     status: 400,
@@ -70,11 +88,19 @@ export class EventsController {
     description:
       'Bad request. Usually triggered if the request body or provided parameter is not valid',
   })
-  async findOne(@Param('id') id: string): Promise<Event | null> {
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<SuccessResponseTypeEventGetOne> {
     try {
       const exists = await this.eventsService.findOne(id);
 
-      return exists;
+      const res: SuccessResponseTypeEventGetOne = {
+        message: 'Event found successfully',
+        success: true,
+        data: exists,
+      };
+
+      return res;
     } catch (error) {
       handleDatabaseErrors(error);
 
@@ -86,8 +112,8 @@ export class EventsController {
   @Patch(':id')
   @ApiResponse({
     status: 200,
-    type: SuccessResponseType,
-    description: 'Returns true if updated successfully',
+    type: SuccessResponseTypeEventPatch,
+    description: 'Updates an event.',
   })
   @ApiResponse({
     status: 400,
@@ -98,11 +124,15 @@ export class EventsController {
   async update(
     @Param('id') id: string,
     @Body() updateEventDto: UpdateEventDto,
-  ): Promise<SuccessResponseType> {
+  ): Promise<SuccessResponseTypeEventPatch> {
     try {
       const result = await this.eventsService.update(id, updateEventDto);
 
-      return { success: result.affected != undefined && result.affected > 0 };
+      return {
+        success: true,
+        message: 'Event updated successfully',
+        data: result,
+      };
     } catch (error) {
       handleDatabaseErrors(error);
 
@@ -114,7 +144,7 @@ export class EventsController {
   @Delete(':id')
   @ApiResponse({
     status: 200,
-    type: SuccessResponseType,
+    type: SuccessResponseTypeEventDelete,
     description: 'Returns true if deleted successfully',
   })
   @ApiResponse({
@@ -123,11 +153,18 @@ export class EventsController {
     description:
       'Bad request. Usually triggered if the request body or provided parameter is not valid',
   })
-  async remove(@Param('id') id: string): Promise<SuccessResponseType> {
+  async remove(
+    @Param('id') id: string,
+  ): Promise<SuccessResponseTypeEventDelete> {
     try {
-      const success = await this.eventsService.remove(id);
+      const result = await this.eventsService.remove(id);
 
-      return { success: success.affected != undefined && success.affected > 0 };
+      const success = result.affected != undefined && result.affected > 0;
+
+      return {
+        success: success,
+        message: success ? 'Event deleted successfully' : 'Event not deleted',
+      };
     } catch (error) {
       handleDatabaseErrors(error);
 

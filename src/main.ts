@@ -1,8 +1,9 @@
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { customValidationPipe } from './helpers/customValidation';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -24,9 +25,6 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
 
-  // Enable validation
-  app.useGlobalPipes(new ValidationPipe());
-
   // Trust proxy
   app.set('trust proxy', 'loopback');
 
@@ -34,6 +32,9 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.CORS_ORIGIN,
   });
+
+  // Enable global validation
+  app.useGlobalPipes(customValidationPipe);
 
   // Start listening
   await app.listen(process.env.PORT ?? 3000);

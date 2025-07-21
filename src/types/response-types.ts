@@ -11,19 +11,28 @@ export class ForbiddenResponseType {
   error: 'Forbidden';
 }
 
+class BadRequestResponseTypeError {
+  @ApiProperty()
+  field: string;
+
+  @ApiProperty({ type: [String] })
+  errors: string[];
+}
+
 export class BadRequestResponseType {
   @ApiProperty({
     type: Number,
+    default: 400,
   })
   statusCode: number = 400;
 
   @ApiProperty({
-    type: [String],
+    type: String,
   })
-  message: string[];
+  message: string;
 
-  @ApiProperty({ type: String })
-  error: string;
+  @ApiProperty({ type: [BadRequestResponseTypeError] })
+  errors: BadRequestResponseTypeError[];
 }
 
 export class SuccessResponseType {
@@ -31,4 +40,9 @@ export class SuccessResponseType {
     type: Boolean,
   })
   success: boolean;
+
+  @ApiProperty({
+    type: String,
+  })
+  message: string;
 }
