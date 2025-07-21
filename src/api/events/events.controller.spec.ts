@@ -12,6 +12,7 @@ import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
 
 const eventMock: Event = {
+  identification: '1',
   id: '1',
   name: 'Lorem',
   type: EventType.APP,
@@ -134,6 +135,7 @@ describe('EventsController', () => {
   it('should create an event', () => {
     controller
       .create({
+        identification: eventMock.identification,
         name: eventMock.name,
         type: eventMock.type,
         description: eventMock.description,
@@ -159,6 +161,7 @@ describe('EventsController', () => {
 
   it('should update an event', () => {
     const entry: CreateEventDto = {
+      identification: eventMock.identification,
       name: 'Lorem 1234',
       type: EventType.LIVEOPS,
       description: 'Ipsum 2',
@@ -166,6 +169,7 @@ describe('EventsController', () => {
     };
     controller
       .update('1', {
+        identification: eventMock.id,
         name: entry.name,
         type: entry.type,
         description: entry.description,
@@ -190,6 +194,7 @@ describe('EventsController', () => {
   it('should not update an event', () => {
     controller
       .update('2', {
+        identification: eventMock.identification,
         name: eventMock.name,
         type: eventMock.type,
         description: eventMock.description,

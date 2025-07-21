@@ -67,10 +67,10 @@ Visit [http://localhost:3000/docs](http://localhost:3000/docs) for documentation
 
 ```bash
 # unit tests
-$ npm run test
+npm run test
 
 # e2e tests
-$ npm run test:e2e
+npm run test:e2e
 
 # test coverage
 $ npm run test:cov

@@ -24,6 +24,7 @@ describe('CreateEventGuard', () => {
 
   it('should allow request if event type is not "ads"', async () => {
     const entry: CreateEventDto = {
+      identification: '1',
       name: 'Lorem 1',
       type: EventType.APP,
       description: 'Ipsum 2',
@@ -60,6 +61,7 @@ describe('CreateEventGuard', () => {
     const request = { ip: '127.0.0.1', ips: [] };
     const spy = jest.spyOn(guard, 'validateIpAddressForAdsEvent');
     const createDto: CreateEventDto = {
+      identification: '1',
       description: 'Ipsum',
       name: 'Lorem',
       priority: 1,
@@ -82,6 +84,7 @@ describe('CreateEventGuard', () => {
     const request = { ip: undefined, ips: [] };
     const spy = jest.spyOn(guard, 'validateIpAddressForAdsEvent');
     const createDto: CreateEventDto = {
+      identification: '1',
       description: 'Ipsum',
       name: 'Lorem',
       priority: 1,

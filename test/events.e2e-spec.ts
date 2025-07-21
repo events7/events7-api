@@ -20,6 +20,7 @@ import { Event, EventType } from '../src/api/events/entities/event.entity';
 import { EventsModule } from '../src/api/events/events.module';
 
 const mockEvent: Event = {
+  identification: '1',
   id: '1234567',
   name: 'Lorem',
   type: EventType.CROSSPROMO,
@@ -145,6 +146,7 @@ describe('EventsController (e2e)', () => {
 
   it('/api/events (POST)', () => {
     const entry: CreateEventDto = {
+      identification: '1',
       name: 'Lorem 1',
       type: EventType.LIVEOPS,
       description: 'Ipsum 2',
@@ -179,6 +181,7 @@ describe('EventsController (e2e)', () => {
 
   it('/api/events/:id (PATCH)', () => {
     const entry: UpdateEventDto = {
+      identification: '1',
       name: 'Lorem 1',
       type: EventType.LIVEOPS,
       description: 'Ipsum 2',
@@ -201,6 +204,7 @@ describe('EventsController (e2e)', () => {
 
   it('/api/events/:id (PATCH) return false', () => {
     const entry: UpdateEventDto = {
+      identification: '1',
       name: 'Lorem 1',
       type: EventType.LIVEOPS,
       description: 'Ipsum 2',

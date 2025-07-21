@@ -7,6 +7,7 @@ import { Event, EventType } from './entities/event.entity';
 import { EventsService } from './events.service';
 
 const mockEvent: Event = {
+  identification: '1',
   id: '1234567',
   name: 'Lorem',
   type: EventType.APP,
@@ -100,6 +101,7 @@ describe('EventsService', () => {
 
   it('should create an event', async () => {
     const entry: CreateEventDto = {
+      identification: '1',
       name: 'Lorem 1',
       type: EventType.APP,
       description: 'Ipsum 2',
