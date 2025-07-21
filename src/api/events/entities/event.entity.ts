@@ -20,6 +20,10 @@ export class Event {
   @ApiProperty()
   id: string;
 
+  @Column({ unique: true })
+  @ApiProperty()
+  identification: string;
+
   @Column()
   @ApiProperty()
   name: string;

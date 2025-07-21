@@ -65,7 +65,8 @@ export class EventsController {
 
       return res;
     } catch (error) {
-      console.error(error);
+      handleDatabaseErrors(error);
+
       throw error;
     }
   }

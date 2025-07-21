@@ -14,6 +14,11 @@ export class CreateEventDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  identification: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   name: string;
 
   @ApiProperty()
