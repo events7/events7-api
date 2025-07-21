@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "a5c75570-52ae-434a-8518-0cc9de414100",
+		"name": "events7",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "434647"
+	},
+	"item": [
+		{
+			"name": "v1/api/events",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/v1/api/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"api",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "v1/api/events/:id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/v1/api/events/771aeb94-f4df-4310-8852-98b75fa56d2b",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"api",
+						"events",
+						"771aeb94-f4df-4310-8852-98b75fa56d2b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "v1/api/events",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"identification\": \"Banna12\",\n    \"name\": \"Banana 1\",\n    \"description\": \"Opis\",\n    \"type\": \"app\",\n    \"priority\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/v1/api/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"api",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "v1/api/events/:id",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/v1/api/events/73dbe1e1-4978-4dbf-afcf-dfd2e690c1f9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"api",
+						"events",
+						"73dbe1e1-4978-4dbf-afcf-dfd2e690c1f9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "v1/api/events/:id",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"identification\": \"Banna1\",\n    \"name\": \"Banana 1\",\n    \"description\": \"Opis\",\n    \"type\": \"ads\",\n    \"priority\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/v1/api/events/3dc76aa8-6b9c-4b3e-b0e3-35d212d5aaa",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"api",
+						"events",
+						"3dc76aa8-6b9c-4b3e-b0e3-35d212d5aaa"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
