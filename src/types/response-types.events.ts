@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Event } from 'src/api/events/entities/event.entity';
+import { Event } from '../api/events/entities/event.entity';
 import { SuccessResponseType } from './response-types';
 
 export class SuccessResponseTypeEventPost extends SuccessResponseType {

@@ -1,6 +1,11 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SuccessResponseType } from 'src/types/response-types';
-import { DeleteResult, UpdateResult } from 'typeorm';
+import {
+  SuccessResponseTypeEventGetOne,
+  SuccessResponseTypeEventPatch,
+} from 'src/types/response-types.events';
+import { DeleteResult } from 'typeorm';
+import { SuccessResponseType } from '../../types/response-types';
 import { CreateEventDto } from './dto/create-event.dto';
 import { Event, EventType } from './entities/event.entity';
 import { EventsController } from './events.controller';
@@ -37,25 +42,18 @@ describe('EventsController', () => {
         }),
       );
     }),
-    update: jest.fn(
-      (id: string, updateEventDto: Event): Promise<UpdateResult> => {
-        if (eventMock.id !== id) {
-          const res: UpdateResult = {
-            generatedMaps: [],
-            raw: [],
-            affected: 0,
-          };
-          return new Promise((resolve) => resolve(res));
-        } else {
-          const res: UpdateResult = {
-            generatedMaps: [{ ...eventMock, ...updateEventDto }],
-            raw: [{ ...eventMock, ...updateEventDto }],
-            affected: 1,
-          };
-          return new Promise((resolve) => resolve(res));
-        }
-      },
-    ),
+    update: jest.fn((id: string, updateEventDto: Event): Promise<Event> => {
+      if (eventMock.id === id) {
+        const res: Event = {
+          ...eventMock,
+          ...updateEventDto,
+          id,
+        };
+        return new Promise((resolve) => resolve(res));
+      } else {
+        return new Promise((resole, reject) => reject(new NotFoundException()));
+      }
+    }),
 
     remove: jest.fn((id: string): Promise<DeleteResult> => {
       if (eventMock.id !== id) {
@@ -105,8 +103,13 @@ describe('EventsController', () => {
     controller
       .findOne('1')
       .then((res) => {
+        const resMock: SuccessResponseTypeEventGetOne = {
+          message: 'Event found successfully',
+          success: true,
+          data: eventMock,
+        };
         expect(res).toEqual({
-          ...eventMock,
+          ...resMock,
         });
       })
       .catch((err) => {
@@ -118,7 +121,14 @@ describe('EventsController', () => {
     controller
       .findOne('2')
       .then((res) => {
-        expect(res).toBeNull();
+        const resMock: SuccessResponseTypeEventGetOne = {
+          message: 'Event not found',
+          success: false,
+          data: null,
+        };
+        expect(res).toEqual({
+          ...resMock,
+        });
       })
       .catch((err) => {
         expect(err).toBeUndefined();
@@ -134,9 +144,16 @@ describe('EventsController', () => {
         priority: eventMock.priority,
       })
       .then((res) => {
+        const resMock: SuccessResponseTypeEventGetOne = {
+          data: {
+            ...eventMock,
+            id: '2',
+          },
+          message: 'Event created successfully!',
+          success: true,
+        };
         expect(res).toEqual({
-          ...eventMock,
-          id: '2',
+          ...resMock,
         });
       })
       .catch((err) => {
@@ -159,8 +176,13 @@ describe('EventsController', () => {
         priority: entry.priority,
       })
       .then((res) => {
-        const expected: SuccessResponseType = {
+        const expected: SuccessResponseTypeEventPatch = {
           success: true,
+          message: 'Event updated successfully',
+          data: {
+            ...eventMock,
+            ...entry,
+          },
         };
         expect(res).toEqual(expected);
       })
@@ -178,13 +200,10 @@ describe('EventsController', () => {
         priority: eventMock.priority,
       })
       .then((res) => {
-        const expected: SuccessResponseType = {
-          success: false,
-        };
-        expect(res).toEqual(expected);
+        expect(res).toBeUndefined();
       })
       .catch((err) => {
-        expect(err).toBeUndefined();
+        expect(err).toBeInstanceOf(NotFoundException);
       });
   });
 
@@ -194,6 +213,7 @@ describe('EventsController', () => {
       .then((res) => {
         const expected: SuccessResponseType = {
           success: true,
+          message: 'Event deleted successfully',
         };
         expect(res).toEqual(expected);
       })
@@ -208,6 +228,7 @@ describe('EventsController', () => {
       .then((res) => {
         const expected: SuccessResponseType = {
           success: false,
+          message: 'Event not deleted',
         };
         expect(res).toEqual(expected);
       })

@@ -2,7 +2,16 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UpdateEventDto } from 'src/api/events/dto/update-event.dto';
-import { SuccessResponseType } from 'src/types/response-types';
+import {
+  ForbiddenResponseType,
+  NotFoundExceptionType,
+  SuccessResponseType,
+} from 'src/types/response-types';
+import {
+  SuccessResponseTypeEventGetOne,
+  SuccessResponseTypeEventPatch,
+  SuccessResponseTypeEventPost,
+} from 'src/types/response-types.events';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { DeleteResult, UpdateResult } from 'typeorm';
@@ -111,7 +120,12 @@ describe('EventsController (e2e)', () => {
       .expect(200)
       .expect((res) => {
         // parsing to avoid Date object
-        expect(res.body).toEqual(JSON.parse(JSON.stringify(mockEvent)));
+        const expected: SuccessResponseTypeEventGetOne = {
+          success: true,
+          data: JSON.parse(JSON.stringify(mockEvent)) as Event,
+          message: 'Event found successfully',
+        };
+        expect(res.body).toEqual(expected);
       });
   });
 
@@ -120,8 +134,12 @@ describe('EventsController (e2e)', () => {
       .get('/api/events/987654')
       .expect(200)
       .expect((res) => {
-        // parsing to avoid Date object
-        expect(res.body).toEqual({});
+        const expected: SuccessResponseTypeEventGetOne = {
+          success: false,
+          data: null,
+          message: 'Event not found',
+        };
+        expect(res.body).toEqual(expected);
       });
   });
 
@@ -140,16 +158,21 @@ describe('EventsController (e2e)', () => {
         // can't easily separate the 403 and 201 statuses (if type == "ADS")
         // asuming this is enought just fo this test
         if (res.status === 201) {
-          // parsing to avoid Date object
-          expect(res.body).toEqual(
-            JSON.parse(JSON.stringify({ ...mockEvent, ...entry })),
-          );
+          const expected: SuccessResponseTypeEventPost = {
+            data: JSON.parse(
+              JSON.stringify({ ...mockEvent, ...entry }),
+            ) as Event,
+            success: true,
+            message: 'Event created successfully!',
+          };
+          expect(res.body).toEqual(expected);
         } else if (res.status === 403) {
-          expect(res.body).toEqual({
+          const expected: ForbiddenResponseType = {
             error: 'Forbidden',
             statusCode: 403,
             message: 'Forbidden resource',
-          });
+          };
+          expect(res.body).toEqual(expected);
         }
       });
   });
@@ -167,8 +190,10 @@ describe('EventsController (e2e)', () => {
       .send(entry)
       .expect(200)
       .expect((res) => {
-        const expected: SuccessResponseType = {
+        const expected: SuccessResponseTypeEventPatch = {
           success: true,
+          message: 'Event updated successfully',
+          data: JSON.parse(JSON.stringify({ ...mockEvent, ...entry })) as Event,
         };
         expect(res.body).toEqual(expected);
       });
@@ -185,10 +210,11 @@ describe('EventsController (e2e)', () => {
     return request(app.getHttpServer())
       .patch('/api/events/987654')
       .send(entry)
-      .expect(200)
+      .expect(404)
       .expect((res) => {
-        const expected: SuccessResponseType = {
-          success: false,
+        const expected: NotFoundExceptionType = {
+          message: 'Not Found',
+          statusCode: 404,
         };
         expect(res.body).toEqual(expected);
       });
@@ -201,6 +227,7 @@ describe('EventsController (e2e)', () => {
       .expect((res) => {
         const expected: SuccessResponseType = {
           success: true,
+          message: 'Event deleted successfully',
         };
         expect(res.body).toEqual(expected);
       });
@@ -213,6 +240,7 @@ describe('EventsController (e2e)', () => {
       .expect((res) => {
         const expected: SuccessResponseType = {
           success: false,
+          message: 'Event not deleted',
         };
         expect(res.body).toEqual(expected);
       });

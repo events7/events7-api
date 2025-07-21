@@ -9,17 +9,18 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
+import { handleDatabaseErrors } from '../../helpers/handleDatabaseErrors';
+import {
+  BadRequestResponseType,
+  ForbiddenResponseType,
+  NotFoundExceptionType,
+} from '../../types/response-types';
 import {
   SuccessResponseTypeEventDelete,
   SuccessResponseTypeEventGetOne,
   SuccessResponseTypeEventPatch,
   SuccessResponseTypeEventPost,
-} from 'src/types/response-types.events';
-import { handleDatabaseErrors } from '../../helpers/handleDatabaseErrors';
-import {
-  BadRequestResponseType,
-  ForbiddenResponseType,
-} from '../../types/response-types';
+} from '../../types/response-types.events';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity';
@@ -95,8 +96,8 @@ export class EventsController {
       const exists = await this.eventsService.findOne(id);
 
       const res: SuccessResponseTypeEventGetOne = {
-        message: 'Event found successfully',
-        success: true,
+        message: exists ? 'Event found successfully' : 'Event not found',
+        success: exists ? true : false,
         data: exists,
       };
 
@@ -121,6 +122,11 @@ export class EventsController {
     description:
       'Bad request. Usually triggered if the request body or provided parameter is not valid',
   })
+  @ApiResponse({
+    status: 404,
+    type: NotFoundExceptionType,
+    description: 'Entry not found',
+  })
   async update(
     @Param('id') id: string,
     @Body() updateEventDto: UpdateEventDto,
@@ -136,7 +142,6 @@ export class EventsController {
     } catch (error) {
       handleDatabaseErrors(error);
 
-      console.error(error);
       throw error;
     }
   }

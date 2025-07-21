@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DeleteResult, UpdateResult } from 'typeorm';
@@ -128,20 +129,22 @@ describe('EventsService', () => {
 
   it('should update an event', async () => {
     const event = await service.update(mockEvent.id, mockEvent);
+
     expect(event).toEqual({
-      generatedMaps: [mockEvent],
-      raw: [mockEvent],
-      affected: 1,
+      ...mockEvent,
+      id: mockEvent.id,
     });
   });
 
   it('should not update an event', async () => {
-    const event = await service.update('9876543', mockEvent);
-    expect(event).toEqual({
-      raw: [],
-      affected: 0,
-      generatedMaps: [],
-    });
+    try {
+      await service.update('9876543', mockEvent);
+
+      // expect to not come here
+      expect(true).toBe(false);
+    } catch (error) {
+      expect(error).toBeInstanceOf(NotFoundException);
+    }
   });
 
   it('should delete an event', async () => {

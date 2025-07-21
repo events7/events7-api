@@ -5,7 +5,7 @@ export class ForbiddenResponseType {
   statusCode: number = 403;
 
   @ApiProperty()
-  message: 'Forbidden';
+  message: 'Forbidden resource';
 
   @ApiProperty()
   error: 'Forbidden';
@@ -45,4 +45,18 @@ export class SuccessResponseType {
     type: String,
   })
   message: string;
+}
+
+export class NotFoundExceptionType {
+  @ApiProperty({
+    type: String,
+    default: 'Entry not found',
+  })
+  message: string;
+
+  @ApiProperty({
+    type: Number,
+    default: 404,
+  })
+  statusCode: number;
 }
