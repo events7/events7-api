@@ -92,13 +92,9 @@ When you're ready to deploy your NestJS application to production, there are som
 
 5. I also assumed that there is no need for pagination and filters under `/api/v1/events` GET request. This could be implemented later.
 
-6. ...
-
 ## Usefull things
 
 1. Check [postman/events7.postman_collection.json](postman/events7.postman_collection.json) for postman export.
-
-2. ...
 
 ## Stay in touch
 
