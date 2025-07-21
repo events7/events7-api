@@ -236,11 +236,11 @@ describe('EventsController (e2e)', () => {
   it('/api/events/:id (DELETE) return false', () => {
     return request(app.getHttpServer())
       .delete('/api/events/987654')
-      .expect(200)
+      .expect(404)
       .expect((res) => {
-        const expected: SuccessResponseType = {
-          success: false,
-          message: 'Event not deleted',
+        const expected: NotFoundExceptionType = {
+          message: 'Not Found',
+          statusCode: 404,
         };
         expect(res.body).toEqual(expected);
       });

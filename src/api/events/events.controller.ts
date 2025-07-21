@@ -158,22 +158,24 @@ export class EventsController {
     description:
       'Bad request. Usually triggered if the request body or provided parameter is not valid',
   })
+  @ApiResponse({
+    status: 404,
+    type: NotFoundExceptionType,
+    description: 'Entry not found',
+  })
   async remove(
     @Param('id') id: string,
   ): Promise<SuccessResponseTypeEventDelete> {
     try {
-      const result = await this.eventsService.remove(id);
-
-      const success = result.affected != undefined && result.affected > 0;
+      await this.eventsService.remove(id);
 
       return {
-        success: success,
-        message: success ? 'Event deleted successfully' : 'Event not deleted',
+        success: true,
+        message: 'Event deleted successfully',
       };
     } catch (error) {
       handleDatabaseErrors(error);
 
-      console.error(error);
       throw error;
     }
   }

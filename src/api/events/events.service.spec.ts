@@ -156,10 +156,13 @@ describe('EventsService', () => {
   });
 
   it('should not delete an event', async () => {
-    const event = await service.remove('9876543');
-    expect(event).toEqual({
-      raw: [],
-      affected: 0,
-    });
+    try {
+      await service.remove('9876543');
+
+      // expect to not come here
+      expect(true).toBe(false);
+    } catch (error) {
+      expect(error).toBeInstanceOf(NotFoundException);
+    }
   });
 });

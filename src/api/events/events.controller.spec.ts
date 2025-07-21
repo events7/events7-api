@@ -56,18 +56,14 @@ describe('EventsController', () => {
     }),
 
     remove: jest.fn((id: string): Promise<DeleteResult> => {
-      if (eventMock.id !== id) {
+      if (eventMock.id === id) {
         const res: DeleteResult = {
           raw: [],
           affected: 0,
         };
         return new Promise((resolve) => resolve(res));
       } else {
-        const res: DeleteResult = {
-          raw: [eventMock],
-          affected: 1,
-        };
-        return new Promise((resolve) => resolve(res));
+        return new Promise((resole, reject) => reject(new NotFoundException()));
       }
     }),
   };
@@ -226,14 +222,10 @@ describe('EventsController', () => {
     controller
       .remove('2')
       .then((res) => {
-        const expected: SuccessResponseType = {
-          success: false,
-          message: 'Event not deleted',
-        };
-        expect(res).toEqual(expected);
+        expect(res).toBeUndefined();
       })
       .catch((err) => {
-        expect(err).toBeUndefined();
+        expect(err).toBeInstanceOf(NotFoundException);
       });
   });
 });

@@ -30,10 +30,16 @@ export class EventsService {
     if (!oldEntry) {
       throw new NotFoundException();
     }
-    return this.eventRepository.save({ id, ...updateEventDto }, {});
+    return this.eventRepository.save({ id, ...updateEventDto });
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const oldEntry = await this.findOne(id);
+
+    if (!oldEntry) {
+      throw new NotFoundException();
+    }
+
     return this.eventRepository.delete({ id });
   }
 }
